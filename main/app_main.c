@@ -1,177 +1,109 @@
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "esp_wifi.h"
-#include "esp_event.h" // to see events
-#include "esp_log.h" 
-#include "nvs_flash.h" // non volatile storage
-#include "driver/i2c.h" // I2C driver
- 
-#define WIFI_SSID "WINDTRE-14B490"
-#define WIFI_PASS "7cx472b8u5u57k8r"
-#define OLED_ADDR 0x3C // I2C address of the OLED display
+#include "driver/i2c.h"
 
-#define I2C_MASTER_SCL_IO 21   // GPIO pin for I2C SDA
-#define I2C_MASTER_SDA_IO 22   // GPIO pin for I2C SCL
-#define I2C_MASTER_NUM I2C_NUM_0 // I2C port number for master dev
-#define I2C_MASTER_FREQ_HZ 100000 // I2C frequency
-#define I2C_MASTER_TX_BUF_DISABLE 0 // I2C master doesn't need buffer
-#define I2C_MASTER_RX_BUF_DISABLE 0 // I2C master doesn't need buffer
+#define OLED_ADDR 0x3C
 
+#define I2C_MASTER_SCL_IO 22
+#define I2C_MASTER_SDA_IO 21
+#define I2C_MASTER_NUM    I2C_NUM_0
+#define I2C_MASTER_FREQ_HZ 100000
 
-
-// The default Wi-Fi configuration
-static const char *TAG = "WIFI";
-
-void wifi_init_sta(void) {
-    esp_netif_init();                // Initialize the network interface
-
-    esp_event_loop_create_default(); // Create the default event loop
-                                     // This is where we will handle events
-
-    esp_netif_create_default_wifi_sta(); // Create the default Wi-Fi station interface
-                                         // This is where we will connect to the Wi-Fi network
-
-    // Initialize the Wi-Fi driver
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    esp_wifi_init(&cfg);
-
-    // information about the Wi-Fi configuration
-    wifi_config_t wifi_config = {
-        .sta = {
-            .ssid = WIFI_SSID,
-            .password = WIFI_PASS,
-        },
-    };
-
-    // Set the Wi-Fi configuration as station (client) not AP (access point)
-    esp_wifi_set_mode(WIFI_MODE_STA);
-    // Set the Wi-Fi configuration
-    esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
-    // Start the Wi-Fi driver
-    esp_wifi_start();
-    // writes to log
-    ESP_LOGI(TAG, "wifi_init_sta finished.");
-}
-
-// i2c_master_init function initializes the I2C master
-// It sets the I2C mode, SDA and SCL pins, pull-up resistors, and clock speed
-// It also installs the I2C driver
-// The I2C driver is used to communicate with the OLED display
-void i2c_master_init(void) {
+void i2c_master_init()
+{
     i2c_config_t conf = {
-        .mode = I2C_MODE_MASTER, // I2C master mode
-        .sda_io_num = I2C_MASTER_SDA_IO, // SDA pin
-        .scl_io_num = I2C_MASTER_SCL_IO, // SCL pin
-        .sda_pullup_en = GPIO_PULLUP_ENABLE, // Enable pull-up resistor for SDA pin
-        .scl_pullup_en = GPIO_PULLUP_ENABLE, // Enable pull-up resistor for SCL pin
-        .master.clk_speed = I2C_MASTER_FREQ_HZ, // I2C clock speed
+        .mode = I2C_MODE_MASTER,
+        .sda_io_num = I2C_MASTER_SDA_IO,
+        .scl_io_num = I2C_MASTER_SCL_IO,
+        .sda_pullup_en = GPIO_PULLUP_ENABLE,
+        .scl_pullup_en = GPIO_PULLUP_ENABLE,
+        .master.clk_speed = I2C_MASTER_FREQ_HZ,
     };
-    // Install the I2C driver
     i2c_param_config(I2C_MASTER_NUM, &conf);
-    i2c_driver_install(I2C_MASTER_NUM, conf.mode,
-                       I2C_MASTER_RX_BUF_DISABLE,
-                       I2C_MASTER_TX_BUF_DISABLE, 0);
+    i2c_driver_install(I2C_MASTER_NUM, conf.mode, 0, 0, 0);
 }
 
-void oled_send_command(uint8_t command) {
-    i2c_cmd_handle_t handle = i2c_cmd_link_create(); // Create a new I2C command link
-    i2c_master_start(handle); // Start the I2C command link
-    i2c_master_write_byte(handle, OLED_ADDR << 1 | I2C_MASTER_WRITE, true); // Write the OLED address and command
-    i2c_master_write_byte(handle, 0x00, true); // Send the command byte
-    i2c_master_write_byte(handle, command, true); // Send the command
-    i2c_master_stop(handle); // Stop the I2C command link
-    i2c_master_cmd_begin(I2C_MASTER_NUM, handle, 1000 / portTICK_PERIOD_MS); // Execute the command
-    i2c_cmd_link_delete(handle); // Delete the command link
-}  
-
-// This function sends data to the OLED display
-// It creates a new I2C command link, starts the link, writes the OLED address and data, and stops the link
-// It also executes the command and deletes the command link
-// The data is sent as a byte, and the command is set to 0x40 to indicate that it is data
-void oled_send_data(uint8_t data) {
+// Komut gönder (control byte = 0x00)
+void oled_send_command(uint8_t command)
+{
     i2c_cmd_handle_t handle = i2c_cmd_link_create();
     i2c_master_start(handle);
     i2c_master_write_byte(handle, (OLED_ADDR << 1) | I2C_MASTER_WRITE, true);
-    i2c_master_write_byte(handle, 0x40, true); // 0x40 = DATA olduğunu gösteriyor
+    i2c_master_write_byte(handle, 0x00, true);  // COMMAND
+    i2c_master_write_byte(handle, command, true);
+    i2c_master_stop(handle);
+    i2c_master_cmd_begin(I2C_MASTER_NUM, handle, 1000 / portTICK_PERIOD_MS);
+    i2c_cmd_link_delete(handle);
+}
+
+// Veri gönder (control byte = 0x40)
+void oled_send_data(uint8_t data)
+{
+    i2c_cmd_handle_t handle = i2c_cmd_link_create();
+    i2c_master_start(handle);
+    i2c_master_write_byte(handle, (OLED_ADDR << 1) | I2C_MASTER_WRITE, true);
+    i2c_master_write_byte(handle, 0x40, true);  // DATA
     i2c_master_write_byte(handle, data, true);
     i2c_master_stop(handle);
     i2c_master_cmd_begin(I2C_MASTER_NUM, handle, 1000 / portTICK_PERIOD_MS);
     i2c_cmd_link_delete(handle);
 }
 
-
-void oled_init() {
-    oled_send_command(0xAE); // Display OFF (sleep mode)
-    oled_send_command(0x20); // Set Memory Addressing Mode
-    oled_send_command(0x00); // Horizontal addressing mode
-    oled_send_command(0xB0); // Set Page Start Address for Page Addressing Mode
-    oled_send_command(0xC8); // COM Output Scan Direction
-    oled_send_command(0x00); // --set low column address
-    oled_send_command(0x10); // --set high column address
-    oled_send_command(0x40); // --set start line address
-    oled_send_command(0x81); oled_send_command(0xFF); // Set contrast control
-    oled_send_command(0xA1); // Set segment re-map 0 to 127
-    oled_send_command(0xA6); // Normal display (not inverted)
-    oled_send_command(0xA8); oled_send_command(0x3F); // Set multiplex ratio (1/64 duty)
-    oled_send_command(0xA4); // Entire Display ON
-    oled_send_command(0xD3); oled_send_command(0x00); // Set display offset
-    oled_send_command(0xD5); oled_send_command(0xF0); // Set display clock divide ratio
-    oled_send_command(0xD9); oled_send_command(0x22); // Set pre-charge period
-    oled_send_command(0xDA); oled_send_command(0x12); // Set COM pins hardware configuration 
-    oled_send_command(0xDB); oled_send_command(0x20); // Set VCOMH Deselect Level which is 0.77*Vcc
-    oled_send_command(0x8D); oled_send_command(0x14); // Enable charge pump
-    oled_send_command(0xAF); // Display ON (sleep mode off)
+// OLED ekranı başlat
+void oled_init()
+{
+    oled_send_command(0xAE);
+    oled_send_command(0x20); oled_send_command(0x00);
+    oled_send_command(0xB0);
+    oled_send_command(0xC8);
+    oled_send_command(0x00);
+    oled_send_command(0x10);
+    oled_send_command(0x40);
+    oled_send_command(0x81); oled_send_command(0xFF);
+    oled_send_command(0xA1);
+    oled_send_command(0xA6);
+    oled_send_command(0xA8); oled_send_command(0x3F);
+    oled_send_command(0xA4);
+    oled_send_command(0xD3); oled_send_command(0x00);
+    oled_send_command(0xD5); oled_send_command(0xF0);
+    oled_send_command(0xD9); oled_send_command(0x22);
+    oled_send_command(0xDA); oled_send_command(0x12);
+    oled_send_command(0xDB); oled_send_command(0x20);
+    oled_send_command(0x8D); oled_send_command(0x14);
+    oled_send_command(0xAF);
 }
 
-void oled_draw_simple() {
-    oled_send_command(0xB0); // first page
-    oled_send_command(0x00); // Low column start address
-    oled_send_command(0x10); // High column start address
-
-    oled_send_data(0xFF); // 8 bits of data to be sent to the display
-    oled_send_data(0x81); // designate the next byte as a command
-    oled_send_data(0x81); // same as above
-    oled_send_data(0xFF); // Set contrast value,
-}
-
-void oled_clear() {
+// OLED ekranı temizle
+void oled_clear()
+{
     for (uint8_t page = 0; page < 8; page++) {
-        oled_send_command(0xB0 + page); // Set page address
-        oled_send_command(0x00); // Set low column address
-        oled_send_command(0x10); // Set high column address
+        oled_send_command(0xB0 + page);
+        oled_send_command(0x00);
+        oled_send_command(0x10);
         for (uint8_t col = 0; col < 128; col++) {
-            oled_send_command(0x00); // Clear the display by sending 0x00 to each column
+            oled_send_data(0x00);
         }
     }
 }
 
-void app_main(void) {
-    /* // Initialize the NVS flash storage
-    // This is used to store the Wi-Fi credentials and other data
-    // that need to be retained across reboots
-    // This is a one-time operation, so we do it here in the app_main function
-    esp_err_t ret = nvs_flash_init();
-    // this is used to check if the NVS flash storage is already initialized
-    // If it is not initialized, we need to erase it and initialize it again
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        nvs_flash_erase();
-        nvs_flash_init();
-    }
+// OLED'e basit bir şey çiz
+void oled_draw_simple()
+{
+    oled_send_command(0xB0); // 0. page
+    oled_send_command(0x00); // Low column
+    oled_send_command(0x10); // High column
 
-    // Initialize the Wi-Fi driver and connect to the Wi-Fi network
-    // This is where we will handle the Wi-Fi events
-    // such as connection, disconnection, etc.
-    wifi_init_sta();
-    // FreeRTOS frees the memory used by the task every 1000 ms
-    // This is used to prevent the task from consuming too much CPU time
-    while (1) {
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    } 
-    */
-    i2c_master_init(); // Initialize the I2C master
-    oled_init(); // Initialize the OLED display
+    oled_send_data(0xFF);
+    oled_send_data(0x81);
+    oled_send_data(0x81);
+    oled_send_data(0xFF);
+}
+
+void app_main(void)
+{
+    i2c_master_init();
+    oled_init();
     oled_clear();
     oled_draw_simple();
-
 }

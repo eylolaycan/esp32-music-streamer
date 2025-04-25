@@ -85,6 +85,22 @@ void oled_send_command(uint8_t command) {
     i2c_cmd_link_delete(handle); // Delete the command link
 }  
 
+// This function sends data to the OLED display
+// It creates a new I2C command link, starts the link, writes the OLED address and data, and stops the link
+// It also executes the command and deletes the command link
+// The data is sent as a byte, and the command is set to 0x40 to indicate that it is data
+void oled_send_data(uint8_t data) {
+    i2c_cmd_handle_t handle = i2c_cmd_link_create();
+    i2c_master_start(handle);
+    i2c_master_write_byte(handle, (OLED_ADDR << 1) | I2C_MASTER_WRITE, true);
+    i2c_master_write_byte(handle, 0x40, true); // 0x40 = DATA olduğunu gösteriyor
+    i2c_master_write_byte(handle, data, true);
+    i2c_master_stop(handle);
+    i2c_master_cmd_begin(I2C_MASTER_NUM, handle, 1000 / portTICK_PERIOD_MS);
+    i2c_cmd_link_delete(handle);
+}
+
+
 void oled_init() {
     oled_send_command(0xAE); // Display OFF (sleep mode)
     oled_send_command(0x20); // Set Memory Addressing Mode
@@ -106,6 +122,28 @@ void oled_init() {
     oled_send_command(0xDB); oled_send_command(0x20); // Set VCOMH Deselect Level which is 0.77*Vcc
     oled_send_command(0x8D); oled_send_command(0x14); // Enable charge pump
     oled_send_command(0xAF); // Display ON (sleep mode off)
+}
+
+void oled_draw_simple() {
+    oled_send_command(0xB0); // first page
+    oled_send_command(0x00); // Low column start address
+    oled_send_command(0x10); // High column start address
+
+    oled_send_data(0xFF); // 8 bits of data to be sent to the display
+    oled_send_data(0x81); // designate the next byte as a command
+    oled_send_data(0x81); // same as above
+    oled_send_data(0xFF); // Set contrast value,
+}
+
+void oled_clear() {
+    for (uint8_t page = 0; page < 8; page++) {
+        oled_send_command(0xB0 + page); // Set page address
+        oled_send_command(0x00); // Set low column address
+        oled_send_command(0x10); // Set high column address
+        for (uint8_t col = 0; col < 128; col++) {
+            oled_send_command(0x00); // Clear the display by sending 0x00 to each column
+        }
+    }
 }
 
 void app_main(void) {
@@ -133,5 +171,7 @@ void app_main(void) {
     */
     i2c_master_init(); // Initialize the I2C master
     oled_init(); // Initialize the OLED display
+    oled_clear();
+    oled_draw_simple();
 
 }

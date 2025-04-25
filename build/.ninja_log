@@ -1002,3 +1002,40 @@
 27619	28182	7673146322594553	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/.bin_timestamp	9cc0df07fe31a8ea
 28182	28378	7673146322673540	esp-idf/esptool_py/CMakeFiles/app_check_size	d2b7083af022e7f7
 28182	28378	7673146322673540	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/esp-idf/esptool_py/CMakeFiles/app_check_size	d2b7083af022e7f7
+160	575	7673176943422174	bootloader-prefix/src/bootloader-stamp/bootloader-build	bd2fedbe396e5764
+160	575	7673176943422174	bootloader/bootloader.elf	bd2fedbe396e5764
+160	575	7673176943422174	bootloader/bootloader.bin	bd2fedbe396e5764
+160	575	7673176943422174	bootloader/bootloader.map	bd2fedbe396e5764
+160	575	7673176943422174	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader-prefix/src/bootloader-stamp/bootloader-build	bd2fedbe396e5764
+160	575	7673176943422174	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader/bootloader.elf	bd2fedbe396e5764
+160	575	7673176943422174	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader/bootloader.bin	bd2fedbe396e5764
+160	575	7673176943422174	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader/bootloader.map	bd2fedbe396e5764
+576	638	7673176947570142	bootloader-prefix/src/bootloader-stamp/bootloader-install	7e073ae37e00e220
+576	638	7673176947570142	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader-prefix/src/bootloader-stamp/bootloader-install	7e073ae37e00e220
+151	674	7673176943333282	esp-idf/main/CMakeFiles/__idf_main.dir/app_main.c.obj	ae19327b2fc14c62
+638	753	7673176949287770	CMakeFiles/bootloader-complete	56c92b953f26213
+638	753	7673176949287770	bootloader-prefix/src/bootloader-stamp/bootloader-done	56c92b953f26213
+638	753	7673176949287770	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/CMakeFiles/bootloader-complete	56c92b953f26213
+638	753	7673176949287770	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader-prefix/src/bootloader-stamp/bootloader-done	56c92b953f26213
+675	810	7673176948570945	esp-idf/main/libmain.a	1317db63b07cf5c9
+172	523	7673178898134790	bootloader-prefix/src/bootloader-stamp/bootloader-build	bd2fedbe396e5764
+172	523	7673178898134790	bootloader/bootloader.elf	bd2fedbe396e5764
+172	523	7673178898134790	bootloader/bootloader.bin	bd2fedbe396e5764
+172	523	7673178898134790	bootloader/bootloader.map	bd2fedbe396e5764
+172	523	7673178898134790	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader-prefix/src/bootloader-stamp/bootloader-build	bd2fedbe396e5764
+172	523	7673178898134790	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader/bootloader.elf	bd2fedbe396e5764
+172	523	7673178898134790	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader/bootloader.bin	bd2fedbe396e5764
+172	523	7673178898134790	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader/bootloader.map	bd2fedbe396e5764
+523	577	7673178901569613	bootloader-prefix/src/bootloader-stamp/bootloader-install	7e073ae37e00e220
+523	577	7673178901569613	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader-prefix/src/bootloader-stamp/bootloader-install	7e073ae37e00e220
+578	695	7673178903260828	CMakeFiles/bootloader-complete	56c92b953f26213
+578	695	7673178903260828	bootloader-prefix/src/bootloader-stamp/bootloader-done	56c92b953f26213
+578	695	7673178903260828	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/CMakeFiles/bootloader-complete	56c92b953f26213
+578	695	7673178903260828	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader-prefix/src/bootloader-stamp/bootloader-done	56c92b953f26213
+158	14227	7673179037900132	esp-idf/esp_system/ld/sections.ld	b924267f05388b42
+158	14227	7673179037900132	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/esp-idf/esp_system/ld/sections.ld	b924267f05388b42
+14228	17784	7673179038675621	esp32-music-streamer.elf	ebbf6eadcfb602e
+17787	18289	7673179079237853	.bin_timestamp	9cc0df07fe31a8ea
+17787	18289	7673179079237853	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/.bin_timestamp	9cc0df07fe31a8ea
+18290	18436	7673179079308290	esp-idf/esptool_py/CMakeFiles/app_check_size	d2b7083af022e7f7
+18290	18436	7673179079308290	C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/esp-idf/esptool_py/CMakeFiles/app_check_size	d2b7083af022e7f7

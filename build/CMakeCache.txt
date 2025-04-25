@@ -14,6 +14,12 @@
 # EXTERNAL cache entries
 ########################
 
+//No help, variable specified on the command line.
+CCACHE_ENABLE:UNINITIALIZED=1
+
+//Path to a program.
+CCACHE_FOUND:FILEPATH=C:/Users/aycan/.espressif/tools/ccache/4.10.2/ccache-4.10.2-windows-x86_64/ccache.exe
+
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=C:/Users/aycan/.espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32-elf-addr2line.exe
 
@@ -347,10 +353,10 @@ Mbed TLS_IS_TOP_LEVEL:STATIC=OFF
 Mbed TLS_SOURCE_DIR:STATIC=C:/Users/aycan/esp/v5.3.3/esp-idf/components/mbedtls/mbedtls
 
 //No help, variable specified on the command line.
-PYTHON_DEPS_CHECKED:UNINITIALIZED=1
+PYTHON:UNINITIALIZED=C:\Users\aycan\.espressif\python_env\idf5.3_py3.11_env\Scripts\python.exe
 
 //No help, variable specified on the command line.
-SDKCONFIG:UNINITIALIZED=c:\Users\aycan\Documents\ESP Projects\esp32-music-streamer\sdkconfig
+PYTHON_DEPS_CHECKED:UNINITIALIZED=1
 
 //Allow unsafe builds. These builds ARE NOT SECURE.
 UNSAFE_BUILD:BOOL=OFF

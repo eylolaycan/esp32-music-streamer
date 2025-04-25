@@ -1,0 +1,2 @@
+source C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader/gdbinit/symbols
+source C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader/gdbinit/connect

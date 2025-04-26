@@ -53,7 +53,6 @@ static const char *TAG = "MAIN";
 
 // Prototypes
 static void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
-void oled_write_connected(void);
 
 // OLED functions
 void i2c_master_init() {
@@ -65,33 +64,85 @@ void i2c_master_init() {
         .scl_pullup_en = GPIO_PULLUP_ENABLE,
         .master.clk_speed = I2C_MASTER_FREQ_HZ
     };
-    i2c_param_config(I2C_MASTER_NUM, &conf);
-    i2c_driver_install(I2C_MASTER_NUM, conf.mode, 0, 0, 0);
+    i2c_param_config(I2C_MASTER_NUM, &conf); // &conf is the configuration structure
+    i2c_driver_install(I2C_MASTER_NUM, conf.mode, 0, 0, 0); // 0 is the RX buffer size, 0 is the TX buffer size, 0 is the I2C driver install flags
 }
 
+/*
+ * CMD Link is a structure that holds the I2C command link. 
+ * It is used to create a sequence of I2C commands to be sent to the slave device. 
+ * The I2C command link is created using the i2c_cmd_link_create() function.
+ * The command link is deleted using the i2c_cmd_link_delete() function.
+ */
 void oled_send_cmd(uint8_t cmd) {
+    // Create a command link to send commands to the OLED display
     i2c_cmd_handle_t handle = i2c_cmd_link_create();
+    
+    // Start the command link
     i2c_master_start(handle);
+
+    /* 
+     * (OLED_ADDR << 1) | I2C_MASTER_WRITE is the address of the OLED display in write mode
+     * The OLED_ADDR is the 7-bit I2C address of the OLED display.
+     * The address is shifted left by 1 bit to make room for the read/write bit by using the bitwise OR operator (|) and << 1
+     * I2C_MASTER_WRITE is a macro that defines the write mode for the I2C communication
+     * The true parameter indicates that the command was sent successfully
+     * The i2c_master_write_byte() function sends a byte to the I2C slave device
+     */
     i2c_master_write_byte(handle, (OLED_ADDR << 1) | I2C_MASTER_WRITE, true);
+    // The 0x00 command byte is used to indicate that the next byte is a command byte
     i2c_master_write_byte(handle, 0x00, true);
+    // cmd is the command byte to be sent to the OLED display
     i2c_master_write_byte(handle, cmd, true);
     i2c_master_stop(handle);
+
+    /* 
+     * The i2c_master_cmd_begin() function sends the command link to the I2C bus and waits.
+     * The I2C_MASTER_NUM is the I2C port number to be used for the communication
+     * The handle is the command link to be sent to the I2C bus
+     * The 1000 / portTICK_PERIOD_MS is the timeout for the command link to be sent
+     */
     i2c_master_cmd_begin(I2C_MASTER_NUM, handle, 1000 / portTICK_PERIOD_MS);
     i2c_cmd_link_delete(handle);
 }
 
+/*
+ * The oled_send_data() function sends data to the OLED display using the I2C protocol.
+ * It creates a command link, starts the command link, sends the address of the OLED display in write mode,
+ * sends the data byte, and stops the command link.
+ * The function uses the i2c_master_start(), i2c_master_write_byte(), and i2c_master_stop() functions to create the command link.
+ * The i2c_master_cmd_begin() function sends the command link to the I2C bus and waits.
+ * The i2c_cmd_link_delete() function deletes the command link after it has been sent.
+ */
 void oled_send_data(uint8_t data) {
     i2c_cmd_handle_t handle = i2c_cmd_link_create();
     i2c_master_start(handle);
+
+
     i2c_master_write_byte(handle, (OLED_ADDR << 1) | I2C_MASTER_WRITE, true);
     i2c_master_write_byte(handle, 0x40, true);
     i2c_master_write_byte(handle, data, true);
     i2c_master_stop(handle);
+
+
     i2c_master_cmd_begin(I2C_MASTER_NUM, handle, 1000 / portTICK_PERIOD_MS);
     i2c_cmd_link_delete(handle);
 }
 
+
+//The oled_clear() function clears the OLED display by sending a series of commands to the display.
 void oled_clear() {
+    /*
+     * for loop iterates over the pages of the OLED display (0-7)
+     * The OLED display has 8 pages, each page is 8 pixels high
+     * The loop sends the page address, column address, and data bytes to clear the display
+     * 0xB0 is the command to set the page address. Page address is the vertical position of the display
+     * 0x00 is the command to set the low column address. The low column address is the horizontal position of the display
+     * 0x10 is the command to set the high column address. The high column address is the horizontal position of the display.
+     * The difference between the low and high column address is 16 columns which is the width of the display.
+     * for loop i iterates over the columns of the OLED display (0-127)
+     * The loop sends the data byte 0x00 to clear the display
+     */
     for (uint8_t page = 0; page < 8; page++) {
         oled_send_cmd(0xB0 + page);
         oled_send_cmd(0x00);
@@ -119,7 +170,7 @@ void oled_write_connected_text() {
     oled_send_cmd(0x00); // low column address
     oled_send_cmd(0x10); // high column address
 
-    const char *text = "BERIL";
+    const char *text = "CONNECTED";
 
     while (*text) {
         oled_write_char(*text);

@@ -19,6 +19,36 @@
 #define I2C_MASTER_TX_BUF_DISABLE 0
 #define I2C_MASTER_RX_BUF_DISABLE 0
 
+static const uint8_t font5x7[][5] = {
+    // 'A' - 'Z'
+    {0x7E,0x11,0x11,0x7E,0x00}, // A
+    {0x7F,0x49,0x49,0x36,0x00}, // B
+    {0x3E,0x41,0x41,0x22,0x00}, // C
+    {0x7F,0x41,0x41,0x3E,0x00}, // D
+    {0x7F,0x49,0x49,0x41,0x00}, // E
+    {0x7F,0x09,0x09,0x01,0x00}, // F
+    {0x3E,0x41,0x51,0x32,0x00}, // G
+    {0x7F,0x08,0x08,0x7F,0x00}, // H
+    {0x41,0x7F,0x41,0x00,0x00}, // I
+    {0x20,0x40,0x41,0x3F,0x00}, // J
+    {0x7F,0x08,0x14,0x63,0x00}, // K
+    {0x7F,0x40,0x40,0x40,0x00}, // L
+    {0x7F,0x02,0x04,0x02,0x7F}, // M
+    {0x7F,0x06,0x18,0x7F,0x00}, // N
+    {0x3E,0x41,0x41,0x3E,0x00}, // O
+    {0x7F,0x09,0x09,0x06,0x00}, // P
+    {0x3E,0x41,0x61,0x7E,0x00}, // Q
+    {0x7F,0x09,0x19,0x66,0x00}, // R
+    {0x46,0x49,0x49,0x31,0x00}, // S
+    {0x01,0x7F,0x01,0x01,0x00}, // T
+    {0x3F,0x40,0x40,0x3F,0x00}, // U
+    {0x1F,0x20,0x40,0x20,0x1F}, // V
+    {0x3F,0x40,0x38,0x40,0x3F}, // W
+    {0x63,0x14,0x08,0x14,0x63}, // X
+    {0x07,0x08,0x70,0x08,0x07}, // Y
+    {0x61,0x51,0x49,0x45,0x43}  // Z
+};
+
 static const char *TAG = "MAIN";
 
 // Prototypes
@@ -61,6 +91,42 @@ void oled_send_data(uint8_t data) {
     i2c_cmd_link_delete(handle);
 }
 
+void oled_clear() {
+    for (uint8_t page = 0; page < 8; page++) {
+        oled_send_cmd(0xB0 + page);
+        oled_send_cmd(0x00);
+        oled_send_cmd(0x10);
+        for (uint8_t i = 0; i < 128; i++) {
+            oled_send_data(0x00);
+        }
+    }
+}
+
+void oled_write_char(char c) {
+    if (c >= 'A' && c <= 'Z') {
+        uint8_t *bitmap = (uint8_t *)font5x7[c-'A'];
+        for (int i = 0; i < 5; i++) {
+            oled_send_data(bitmap[i]);
+        }
+        oled_send_data(0x00); // Space between characters
+    }
+}
+
+void oled_write_connected_text() {
+    oled_clear();
+
+    oled_send_cmd(0xB2); // page 2
+    oled_send_cmd(0x00); // low column address
+    oled_send_cmd(0x10); // high column address
+
+    const char *text = "BERIL";
+
+    while (*text) {
+        oled_write_char(*text);
+        text++;
+    }
+}
+
 void oled_init() {
     vTaskDelay(100 / portTICK_PERIOD_MS);
     oled_send_cmd(0xAE);
@@ -84,35 +150,6 @@ void oled_init() {
     oled_send_cmd(0xAF);
 }
 
-void oled_clear() {
-    for (uint8_t page = 0; page < 8; page++) {
-        oled_send_cmd(0xB0 + page);
-        oled_send_cmd(0x00);
-        oled_send_cmd(0x10);
-        for (uint8_t i = 0; i < 128; i++) {
-            oled_send_data(0x00);
-        }
-    }
-}
-
-// OLED'e "CONNECTED" 
-void oled_write_connected() {
-    oled_clear();
-    oled_send_cmd(0xB2); // Page 2
-    oled_send_cmd(0x00); // Start Column 0
-    oled_send_cmd(0x10); // High Column 0
-
-    const char *text = "CONNECTED";
-
-    for (int i = 0; i < strlen(text); i++) {
-        oled_send_data(0xFF);
-        oled_send_data(0x81);
-        oled_send_data(0x81);
-        oled_send_data(0xFF);
-        oled_send_data(0x00);
-    }
-}
-
 // WiFi event handler
 static void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data) {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
@@ -120,7 +157,7 @@ static void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t e
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_CONNECTED) {
         ESP_LOGI(TAG, "Wi-Fi Connected!");
 
-        oled_write_connected(); // 🔥 OLED'e Connected yazısını bas
+        oled_write_connected_text(); // 🔥 OLED'e Connected yazısını bas
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
         ESP_LOGI(TAG, "Wi-Fi Disconnected. Reconnecting...");
         esp_wifi_connect();

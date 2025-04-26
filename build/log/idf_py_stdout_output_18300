@@ -1,0 +1,71 @@
+[1/5] C:\WINDOWS\system32\cmd.exe /C "cd /D "C:\Users\aycan\Documents\ESP Projects\esp32-music-streamer\build\esp-idf\esptool_py" && C:\Users\aycan\.espressif\python_env\idf5.3_py3.11_env\Scripts\python.exe C:/Users/aycan/esp/v5.3.3/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app "C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/partition_table/partition-table.bin" "C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/esp32-music-streamer.bin""
+esp32-music-streamer.bin binary size 0xbc060 bytes. Smallest app partition is 0x100000 bytes. 0x43fa0 bytes (27%) free.
+[2/5] Performing build step for 'bootloader'
+[1/1] C:\WINDOWS\system32\cmd.exe /C "cd /D "C:\Users\aycan\Documents\ESP Projects\esp32-music-streamer\build\bootloader\esp-idf\esptool_py" && C:\Users\aycan\.espressif\python_env\idf5.3_py3.11_env\Scripts\python.exe C:/Users/aycan/esp/v5.3.3/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 "C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build/bootloader/bootloader.bin""
+Bootloader binary size 0x68d0 bytes. 0x730 bytes (6%) free.
+[3/5] No install step for 'bootloader'
+[4/5] Completed 'bootloader'
+[4/5] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\aycan\esp\v5.3.3\esp-idf\components\esptool_py && C:\Users\aycan\.espressif\tools\cmake\3.30.2\bin\cmake.exe -D IDF_PATH=C:/Users/aycan/esp/v5.3.3/esp-idf -D SERIAL_TOOL=C:/Users/aycan/.espressif/python_env/idf5.3_py3.11_env/Scripts/python.exe;;C:/Users/aycan/esp/v5.3.3/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32 -D SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args -D "WORKING_DIRECTORY=C:/Users/aycan/Documents/ESP Projects/esp32-music-streamer/build" -P C:/Users/aycan/esp/v5.3.3/esp-idf/components/esptool_py/run_serial_tool.cmake"
+esptool.py --chip esp32 -p COM3 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 2MB 0x1000 bootloader/bootloader.bin 0x10000 esp32-music-streamer.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.8.1
+Serial port COM3
+Connecting.....
+Chip is ESP32-D0WD-V3 (revision v3.1)
+Features: WiFi, BT, Dual Core, 240MHz, VRef calibration in efuse, Coding Scheme None
+Crystal is 40MHz
+MAC: 1c:69:20:31:eb:dc
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00001000 to 0x00007fff...
+Flash will be erased from 0x00010000 to 0x000ccfff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+SHA digest in image updated
+Compressed 26832 bytes to 16429...
+Writing at 0x00001000... (50 %)
+Writing at 0x0000788c... (100 %)
+Wrote 26832 bytes (16429 compressed) at 0x00001000 in 0.6 seconds (effective 358.4 kbit/s)...
+Hash of data verified.
+Compressed 770144 bytes to 482600...
+Writing at 0x00010000... (3 %)
+Writing at 0x0001d02a... (6 %)
+Writing at 0x000256a5... (10 %)
+Writing at 0x00030150... (13 %)
+Writing at 0x00035a85... (16 %)
+Writing at 0x0003bcd8... (20 %)
+Writing at 0x00041a8f... (23 %)
+Writing at 0x0004794a... (26 %)
+Writing at 0x0004d46a... (30 %)
+Writing at 0x000534d2... (33 %)
+Writing at 0x000587fb... (36 %)
+Writing at 0x0005dd83... (40 %)
+Writing at 0x00062fd1... (43 %)
+Writing at 0x00068721... (46 %)
+Writing at 0x0006dddc... (50 %)
+Writing at 0x0007378f... (53 %)
+Writing at 0x00079321... (56 %)
+Writing at 0x0007edcd... (60 %)
+Writing at 0x000849a2... (63 %)
+Writing at 0x0008a599... (66 %)
+Writing at 0x0008fed8... (70 %)
+Writing at 0x00095ccd... (73 %)
+Writing at 0x0009b5d8... (76 %)
+Writing at 0x000a1296... (80 %)
+Writing at 0x000aca87... (83 %)
+Writing at 0x000b2515... (86 %)
+Writing at 0x000b84fa... (90 %)
+Writing at 0x000bdf11... (93 %)
+Writing at 0x000c43be... (96 %)
+Writing at 0x000c9635... (100 %)
+Wrote 770144 bytes (482600 compressed) at 0x00010000 in 12.0 seconds (effective 513.9 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 103...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (103 compressed) at 0x00008000 in 0.0 seconds (effective 705.8 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...

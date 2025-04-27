@@ -133,15 +133,11 @@ void oled_send_data(uint8_t data) {
 //The oled_clear() function clears the OLED display by sending a series of commands to the display.
 void oled_clear() {
     /*
-     * for loop iterates over the pages of the OLED display (0-7)
-     * The OLED display has 8 pages, each page is 8 pixels high
-     * The loop sends the page address, column address, and data bytes to clear the display
-     * 0xB0 is the command to set the page address. Page address is the vertical position of the display
-     * 0x00 is the command to set the low column address. The low column address is the horizontal position of the display
-     * 0x10 is the command to set the high column address. The high column address is the horizontal position of the display.
-     * The difference between the low and high column address is 16 columns which is the width of the display.
-     * for loop i iterates over the columns of the OLED display (0-127)
-     * The loop sends the data byte 0x00 to clear the display
+     * The idea behind this loop is to clear the OLED display by writing 0x00 to each pixel on the screen.
+     * The OLED display is divided into 8 pages, and each page has 128 columns. 
+     * We loop through each page (0-7) and set the page address using the 0xB0 command.
+     * Then we set the column address using the 0x00 and 0x10 commands.
+     * Finally, we write 0x00 to each of the 128 columns in that page.
      */
     for (uint8_t page = 0; page < 8; page++) {
         oled_send_cmd(0xB0 + page);
@@ -154,6 +150,13 @@ void oled_clear() {
 }
 
 void oled_write_char(char c) {
+    /*
+     * This array works as a font table, where each character is represented by a 5x7 pixel bitmap.
+     * We first check if the character is between 'A' and 'Z' (uppercase letters).
+     * If it is, we get the corresponding bitmap from the font5x7 array.
+     * Then we loop through the 5 bytes of the bitmap and send each byte to the OLED display using the oled_send_data() function.
+     * Finally, we send a space (0x00) to create a gap between characters.
+     */
     if (c >= 'A' && c <= 'Z') {
         uint8_t *bitmap = (uint8_t *)font5x7[c-'A'];
         for (int i = 0; i < 5; i++) {
@@ -166,7 +169,7 @@ void oled_write_char(char c) {
 void oled_write_connected_text() {
     oled_clear();
 
-    oled_send_cmd(0xB2); // page 2
+    oled_send_cmd(0xB2); // page 2.
     oled_send_cmd(0x00); // low column address
     oled_send_cmd(0x10); // high column address
 

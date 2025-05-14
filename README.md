@@ -40,8 +40,7 @@ esp32_music_streamer/
 │ └── buttons.cpp # GPIO button handling
 │
 ├── spiffs/ # Folder to upload to SPIFFS (MP3 files, web UI)
-│
-├── include/
+├── include/ # Header files
 ├── CMakeLists.txt
 └── sdkconfig
 

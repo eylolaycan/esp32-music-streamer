@@ -45,6 +45,7 @@ esp32_music_streamer/
 ├── CMakeLists.txt
 └── sdkconfig
 
+```
 
 ## 🔧 Setup & Flashing
 

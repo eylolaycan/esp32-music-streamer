@@ -31,16 +31,17 @@ An embedded audio player based on ESP32 that hosts its own Wi-Fi server. Users c
 
 ## 🗂 Project Structure
 
-esp32-music-streamer/
+```
+esp32_music_streamer/
 ├── main/
-│ ├── app_main.cpp # Initialization and app entry
-│ ├── file_player.cpp # MP3 decoding and I2S output
-│ ├── web_server.cpp # HTTP server and web UI
-│ ├── display.cpp # OLED control
-│ └── buttons.cpp # GPIO button handling
+│   ├── app_main.cpp        # Initialization and app entry
+│   ├── file_player.cpp     # MP3 decoding and I2S output
+│   ├── web_server.cpp      # HTTP server and web UI
+│   ├── display.cpp         # OLED control
+│   └── buttons.cpp         # GPIO button handling
 │
-├── spiffs/ # Folder to upload to SPIFFS (MP3 files, web UI)
-├── include/ # Header files
+├── spiffs/                 # Folder to upload to SPIFFS (MP3 files, web UI)
+├── include/                # Header files
 ├── CMakeLists.txt
 └── sdkconfig
 

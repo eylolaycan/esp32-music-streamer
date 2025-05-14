@@ -31,7 +31,7 @@ An embedded audio player based on ESP32 that hosts its own Wi-Fi server. Users c
 
 ## 🗂 Project Structure
 
-esp32_music_streamer/
+esp32-music-streamer/
 ├── main/
 │ ├── app_main.cpp # Initialization and app entry
 │ ├── file_player.cpp # MP3 decoding and I2S output
@@ -57,8 +57,8 @@ esp32_music_streamer/
 ### Steps
 
 ```bash
-git clone https://github.com/yourusername/esp32_music_streamer.git
-cd esp32_music_streamer
+git clone https://github.com/eylolaycan/esp32-music-streamer.git
+cd esp32-music-streamer
 
 idf.py set-target esp32
 idf.py menuconfig       # Choose SPIFFS or SD card, set pinout, Wi-Fi settings

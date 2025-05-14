@@ -1,53 +1,67 @@
-| Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-C6 | ESP32-H2 | ESP32-P4 | ESP32-S2 | ESP32-S3 | Linux |
-| ----------------- | ----- | -------- | -------- | -------- | -------- | -------- | -------- | -------- | ----- |
+# 🎵 ESP32 Music Streamer (Standalone Wi-Fi Audio Player)
 
-# Hello World Example
+An embedded audio player based on ESP32 that hosts its own Wi-Fi server. Users can connect via browser to control audio playback. MP3 files are stored locally (SPIFFS or SD card), and sound is played through an I2S DAC module (e.g., PCM5102A or MAX98357A).
 
-Starts a FreeRTOS task to print "Hello World".
+---
 
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
+## 🚀 Features
 
-## How to use example
+- ✅ Standalone ESP32-based MP3 player (no Bluetooth needed)
+- ✅ Local file storage via **SPIFFS** or **SD card**
+- ✅ Web interface hosted directly on ESP32 (Access Point mode)
+- ✅ Audio output through **I2S DAC** (e.g., PCM5102A, MAX98357A)
+- ✅ SSD1306 OLED shows track info and playback status
+- ✅ Physical buttons for play/pause, next/previous, volume
+- ☑️ *PCB design not yet started – currently on breadboard*
+- ☑️ *No 3D printed case – hardware is exposed*
 
-Follow detailed instructions provided specifically for this example.
+---
 
-Select the instructions depending on Espressif chip installed on your development board:
+## 🧰 Technologies & Tools
 
-- [ESP32 Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/stable/get-started/index.html)
-- [ESP32-S2 Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/get-started/index.html)
+- **Microcontroller**: ESP32 (ESP-IDF Framework)
+- **Audio**: I2S DAC (MAX98357A, PCM5102A)
+- **File System**: SPIFFS or SD card
+- **User Interface**: HTML/CSS (served from ESP32)
+- **Display**: SSD1306 OLED (I2C)
+- **Programming**: C++
+- **PCB Design**: *(Planned – to be done with Altium Designer)*
 
+---
 
-## Example folder contents
+## 🗂 Project Structure
 
-The project **hello_world** contains one source file in C language [hello_world_main.c](main/hello_world_main.c). The file is located in folder [main](main).
-
-ESP-IDF projects are built using CMake. The project build configuration is contained in `CMakeLists.txt` files that provide set of directives and instructions describing the project's source files and targets (executable, library, or both).
-
-Below is short explanation of remaining files in the project folder.
-
-```
+esp32_music_streamer/
+├── main/
+│ ├── app_main.cpp # Initialization and app entry
+│ ├── file_player.cpp # MP3 decoding and I2S output
+│ ├── web_server.cpp # HTTP server and web UI
+│ ├── display.cpp # OLED control
+│ └── buttons.cpp # GPIO button handling
+│
+├── spiffs/ # Folder to upload to SPIFFS (MP3 files, web UI)
+│
+├── include/
 ├── CMakeLists.txt
-├── pytest_hello_world.py      Python script used for automated testing
-├── main
-│   ├── CMakeLists.txt
-│   └── hello_world_main.c
-└── README.md                  This is the file you are currently reading
-```
+└── sdkconfig
 
-For more information on structure and contents of ESP-IDF projects, please refer to Section [Build System](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/build-system.html) of the ESP-IDF Programming Guide.
 
-## Troubleshooting
+## 🔧 Setup & Flashing
 
-* Program upload failure
+### Prerequisites
 
-    * Hardware connection is not correct: run `idf.py -p PORT monitor`, and reboot your board to see if there are any output logs.
-    * The baud rate for downloading is too high: lower your baud rate in the `menuconfig` menu, and try again.
+- ESP-IDF v4.4+ installed
+- Supported ESP32 dev board
+- I2S DAC module connected
+- (Optional) SSD1306 OLED screen connected via I2C
 
-## Technical support and feedback
+### Steps
 
-Please use the following feedback channels:
+```bash
+git clone https://github.com/yourusername/esp32_music_streamer.git
+cd esp32_music_streamer
 
-* For technical queries, go to the [esp32.com](https://esp32.com/) forum
-* For a feature request or bug report, create a [GitHub issue](https://github.com/espressif/esp-idf/issues)
-
-We will get back to you as soon as possible.
+idf.py set-target esp32
+idf.py menuconfig       # Choose SPIFFS or SD card, set pinout, Wi-Fi settings
+idf.py build
+idf.py flash monitor

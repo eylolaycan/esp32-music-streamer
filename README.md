@@ -7,9 +7,9 @@ An embedded audio player based on ESP32 that hosts its own Wi-Fi server. Users c
 ## 🚀 Features
 
 - ✅ Standalone ESP32-based MP3 player (no Bluetooth needed)
-- ✅ Local file storage via **SPIFFS** or **SD card**
-- ✅ Web interface hosted directly on ESP32 (Access Point mode)
-- ✅ Audio output through **I2S DAC** (e.g., PCM5102A, MAX98357A)
+- ✅ Local file storage via **SD card**
+- ✅ Web interface hosted directly on ESP32 
+- ✅ Audio output through BLE
 - ✅ SSD1306 OLED shows track info and playback status
 - ✅ Physical buttons for play/pause, next/previous, volume
 - ☑️ *PCB design not yet started – currently on breadboard*
@@ -20,8 +20,7 @@ An embedded audio player based on ESP32 that hosts its own Wi-Fi server. Users c
 ## 🧰 Technologies & Tools
 
 - **Microcontroller**: ESP32 (ESP-IDF Framework)
-- **Audio**: I2S DAC (MAX98357A, PCM5102A)
-- **File System**: SPIFFS or SD card
+- **File System**: SD card
 - **User Interface**: HTML/CSS (served from ESP32)
 - **Display**: SSD1306 OLED (I2C)
 - **Programming**: C++
@@ -29,32 +28,11 @@ An embedded audio player based on ESP32 that hosts its own Wi-Fi server. Users c
 
 ---
 
-## 🗂 Project Structure
-
-```
-esp32_music_streamer/
-├── main/
-│   ├── app_main.cpp        # Initialization and app entry
-│   ├── file_player.cpp     # MP3 decoding and I2S output
-│   ├── web_server.cpp      # HTTP server and web UI
-│   ├── display.cpp         # OLED control
-│   └── buttons.cpp         # GPIO button handling
-│
-├── spiffs/                 # Folder to upload to SPIFFS (MP3 files, web UI)
-├── include/                # Header files
-├── CMakeLists.txt
-└── sdkconfig
-
-```
+## 🗂 Project Structure-
 
 ## 🔧 Setup & Flashing
 
 ### Prerequisites
-
-- ESP-IDF v4.4+ installed
-- Supported ESP32 dev board
-- I2S DAC module connected
-- (Optional) SSD1306 OLED screen connected via I2C
 
 ### Steps
 

@@ -1,4 +1,4 @@
-# 🎵 ESP32 Music Streamer (Standalone Wi-Fi Audio Player)
+# 🎵 ESP32 Music Streamer (Standalone BLE Music Player)
 
 An embedded audio player based on ESP32 that hosts its own Wi-Fi server. Users can connect via browser to control audio playback. MP3 files are stored locally (SPIFFS or SD card), and sound is played through an I2S DAC module (e.g., PCM5102A or MAX98357A).
 

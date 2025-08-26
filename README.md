@@ -6,7 +6,7 @@ An embedded audio player based on ESP32 that hosts its own Wi-Fi server. Users c
 
 ## 🚀 Features
 
-- ✅ Standalone ESP32-based MP3 player (no Bluetooth needed)
+- ✅ Standalone ESP32-based MP3 player
 - ✅ Local file storage via **SD card**
 - ✅ Web interface hosted directly on ESP32 
 - ✅ Audio output through BLE

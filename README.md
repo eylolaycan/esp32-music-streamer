@@ -1,45 +1,25 @@
-# 🎵 ESP32 Music Streamer (Standalone BLE Music Player)
+## ESP32 Music Streamer (Standalone BLE Music Player)
 
-An embedded audio player based on ESP32 that hosts its own Wi-Fi server. Users can connect via browser to control audio playback. MP3 files are stored locally on SD card, and sound is played through bluetooth.
----
+An embedded audio player project based on the ESP32 microcontroller.
+The system hosts its own Wi-Fi web server that allows users to control audio playback directly from a browser.
+MP3 files are stored locally on an SD card, and audio is streamed over Bluetooth to a connected device.
 
-## 🚀 Features
+## Features
 
-- ✅ Standalone ESP32-based MP3 player
-- ✅ Local file storage via **SD card**
-- ✅ Web interface hosted directly on ESP32 
-- ✅ Audio output through BLE
-- ✅ SSD1306 OLED shows track info and playback status
-- ✅ Physical buttons for play/pause, next/previous, volume
-- ☑️ *PCB design not yet started – currently on breadboard*
-- ☑️ *No 3D printed case – hardware is exposed*
+Standalone ESP32-based MP3 player
+Local file storage using SD card
+Web interface served directly from the ESP32
+Audio output via Bluetooth (A2DP)
+SSD1306 OLED display for track information and playback status
+Physical buttons for play, pause, next, previous, and volume control
+PCB design planned (currently operating on breadboard)
+No enclosure yet (hardware is fully exposed)
 
----
+## Technologies and Tools
 
-## 🧰 Technologies & Tools
-
-- **Microcontroller**: ESP32 (ESP-IDF Framework)
-- **File System**: SD card
-- **User Interface**: HTML/CSS (served from ESP32)
-- **Display**: SSD1306 OLED (I2C)
-- **Programming**: C++
-- **PCB Design**: *(Planned – to be done with Altium Designer)*
-
----
-
-## 🗂 Project Structure-
-
-## 🔧 Setup & Flashing
-
-### Prerequisites
-
-### Steps
-
-```bash
-git clone https://github.com/eylolaycan/esp32-music-streamer.git
-cd esp32-music-streamer
-
-idf.py set-target esp32
-idf.py menuconfig       # Choose SPIFFS or SD card, set pinout, Wi-Fi settings
-idf.py build
-idf.py flash monitor
+Microcontroller: ESP32 (ESP-IDF Framework)
+File System: SD card (FAT32)
+User Interface: HTML/CSS web interface hosted on ESP32
+Display: SSD1306 OLED (I²C communication)
+Programming Language: C++
+PCB Design Tool: Altium Designer (planned for final version)

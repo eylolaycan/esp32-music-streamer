@@ -5,6 +5,7 @@ based on the **ESP32-WROOM-1** module.
 The system integrates **power management, digital storage, audio processing, and headphone output**
 in a modular **mixed-signal architecture** optimized for **low-power portable audio applications**.
 
+![schematic](/Schematic.pdf)
 ---
 
 ## 1. System Architecture

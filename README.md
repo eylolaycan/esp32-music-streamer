@@ -1,7 +1,9 @@
 # ESP32-Based Portable Audio System – Schematic Overview
 
-This repository contains the schematic design of a **battery-powered embedded audio system** based on the **ESP32-WROOM-1** module.  
-The system integrates **power management, digital storage, audio processing, and headphone output** in a modular **mixed-signal architecture** optimized for **low-power portable audio applications**.
+This repository documents the schematic design of a **battery-powered embedded audio system**
+based on the **ESP32-WROOM-1** module.
+The system integrates **power management, digital storage, audio processing, and headphone output**
+in a modular **mixed-signal architecture** optimized for **low-power portable audio applications**.
 
 ---
 
@@ -9,44 +11,49 @@ The system integrates **power management, digital storage, audio processing, and
 
 The design is composed of the following functional blocks:
 
-- USB-C power input  
-- Switching regulator (5 V → 3.3 V)  
-- Li-ion battery charger with I²C control  
-- ESP32 main controller  
-- External SPI NOR flash memory  
-- I²S digital-to-analog converter (DAC)  
-- Stereo headphone amplifier + TRS headphone output  
+- USB-C power input
+- Switching regulator (5 V → 3.3 V)
+- Single-cell Li-ion battery charger with I²C control
+- ESP32 main controller
+- External SPI NOR flash memory
+- I²S digital-to-analog converter (DAC)
+- Stereo headphone amplifier and TRS output
+
+The architecture follows standard embedded mixed-signal design practices,
+with clear separation between **power**, **digital**, and **analog** domains.
 
 ---
 
 ## 2. USB-C Power Input
 
-The USB-C connector provides a **5 V VBUS supply**.
+The USB-C connector provides the main **5 V VBUS supply** to the system.
 
 - CC1 and CC2 pins use **5.1 kΩ pull-down resistors**, configuring the device as a **USB sink**
-- VBUS directly supplies the buck regulator and battery charger
+- The VBUS line directly supplies both the **buck regulator** and the **battery charger**
 
-\[
-V_{VBUS} \approx 5\,\text{V}
-\]
+```text
+V_VBUS ≈ 5 V
 
----
+```
+
 
 ## 3. Switching Regulator (3.3 V Rail)
 
 A buck converter generates the main **3.3 V system rail**.
 
 For an ideal buck converter:
+```text
+V_OUT = D · V_IN
+```
 
-\[
-V_{OUT} = D \cdot V_{IN}
-\]
-
-With \(V_{IN}=5\,\text{V}\) and \(V_{OUT}=3.3\,\text{V}\):
-
-\[
-D \approx \frac{3.3}{5} \approx 0.66
-\]
+With 
+```text
+V_IN  = 5 V
+V_OUT = 3.3 V
+```
+```text
+D ≈ 3.3 / 5 ≈ 0.66
+```
 
 This rail powers:
 
@@ -77,10 +84,9 @@ An **SPI NOR flash** device provides non-volatile storage.
 - SPI signals: **CS**, **SCLK**, **MOSI**, **MISO**
 - Local decoupling minimizes supply impedance. Capacitor impedance is:
 
-\[
-Z_C = \frac{1}{j\omega C}
-\]
-
+```text
+Z_C = 1 / (j · ω · C)
+```
 Typical use cases include firmware assets and audio data storage.
 
 ---
@@ -92,10 +98,9 @@ A single-cell Li-ion battery charger IC handles charging and monitoring.
 ### Charging Control
 - **Constant Current / Constant Voltage (CC/CV)** algorithm
 - Charge current set by an external resistor:
-
-\[
-I_{CHG} = \frac{V_{REF}}{R_{PROG}}
-\]
+```text
+I_CHG = V_REF / R_PROG
+```
 
 ### Monitoring
 - Battery voltage
@@ -111,9 +116,9 @@ The DAC receives audio data via **I²S**.
 
 Bit-clock relationship:
 
-\[
-f_{BCLK} = N_{bits} \cdot f_s
-\]
+```text
+f_BCLK = N_bits · f_s
+```
 
 Separate digital and analog supply domains reduce noise coupling and improve audio performance.
 
@@ -146,24 +151,25 @@ At the amplifier interface and/or output, capacitors are used to **block DC** an
 
 If the headphone output is AC-coupled, the output capacitor \(C_{OUT}\) and the headphone impedance \(R_{LOAD}\) form a **first-order high-pass filter**:
 
-\[
-H(s)=\frac{s R_{LOAD} C_{OUT}}{1+s R_{LOAD} C_{OUT}}
-\]
+```text
+H(s) = (s · R_LOAD · C_OUT) / (1 + s · R_LOAD · C_OUT)
+```
 
 with cutoff frequency:
 
-\[
-f_c=\frac{1}{2\pi R_{LOAD} C_{OUT}}
-\]
+```text
+f_c = 1 / (2π · R_LOAD · C_OUT)
+```
 
 **Practical implication (example):** for typical headphones  
-\(R_{LOAD}=32\,\Omega\), \(C_{OUT}=100\,\mu\text{F}\)
 
-\[
-f_c \approx \frac{1}{2\pi\cdot 32 \cdot 100\times 10^{-6}} \approx 49.7\,\text{Hz}
-\]
+```text
+R_LOAD = 32 Ω
+C_OUT  = 100 µF
+f_c ≈ 49.7 Hz
+```
 
-A higher \(C_{OUT}\) reduces low-frequency attenuation (better bass response), at the cost of component size and possible inrush/pop behavior.
+A higher C_OUT reduces low-frequency attenuation (better bass response), at the cost of component size and possible inrush/pop behavior.
 
 ### 8.3 Input Filtering and Stability Considerations
 
@@ -175,10 +181,9 @@ Small RC networks around the amplifier input/output are commonly used to:
 
 A generic first-order low-pass (if present) is:
 
-\[
-f_{LP}=\frac{1}{2\pi R C}
-\]
-
+```text
+f_LP = 1 / (2π · R · C)
+```
 Even when not intended as an “audio” filter, such networks are important for **EMC robustness** and to prevent oscillations caused by headphone cable capacitance.
 
 ### 8.4 Power Supply Decoupling and Noise
@@ -186,11 +191,11 @@ Even when not intended as an “audio” filter, such networks are important for
 A headphone amplifier can draw **dynamic current** correlated with the audio waveform; therefore supply impedance directly affects distortion and noise.  
 Local decoupling capacitors provide a low AC impedance:
 
-\[
-Z_C=\frac{1}{j\omega C}
-\]
+```text
+Z_C = 1 / (j · ω · C)
+```
 
-Placing \(0.1\,\mu\text{F}\) (HF) + \(1\,\mu\text{F}\) (MF/LF) close to the amplifier supply pins reduces:
+Placing 0.1 (HF) + 1 (MF/LF) close to the amplifier supply pins reduces:
 
 - audible ripple from the switching regulator,
 - transient droop during bass peaks,
@@ -201,11 +206,11 @@ Placing \(0.1\,\mu\text{F}\) (HF) + \(1\,\mu\text{F}\) (MF/LF) close to the ampl
 AC coupling capacitors charge to a bias point during startup. The charging transient can produce an audible **pop** if not controlled.  
 The pop magnitude is linked to the step component seen at the output:
 
-\[
-v_{pop}(t)\sim V_{step}\, e^{-t/(R_{eq}C)}
-\]
+```text
+v_pop(t) ≈ V_step · e^(−t / (R_eq · C))
+```
 
-where \(R_{eq}\) is the effective discharge/charge path. Practical mitigation includes:
+where R_eq is the effective discharge/charge path. Practical mitigation includes:
 
 - controlled enable sequencing (DAC before amplifier),
 - adequate biasing/discharge paths,

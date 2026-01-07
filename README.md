@@ -33,9 +33,9 @@ The USB-C connector provides the main **5 V VBUS supply** to the system.
 
 ```text
 V_VBUS ≈ 5 V
-
 ```
 
+---
 
 ## 3. Switching Regulator (3.3 V Rail)
 
